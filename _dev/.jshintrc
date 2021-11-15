@@ -1,0 +1,10 @@
+{
+  // Environments
+  "jquery": true,
+  "browser": true,
+  // Relaxes
+  "sub": true,
+  "eqnull": true,
+  // ES6
+  "esversion": 6
+}

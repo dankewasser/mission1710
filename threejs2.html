@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Three.js チュートリアル１</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.min.js"></script>
+</head>
+
+<body>
+  <script>
+    var myRound = Math.round,
+        myCeil = Math.ceil,
+        myRandom = Math.random,
+        mySin = Math.sin,
+        myCos = Math.cos,
+        mySqrt = Math.sqrt,
+        myPI = Math.PI;
+    var myPow = function(a, b) {
+      var c = a;
+      for (var i = 1; i < b; i++) {
+        c *= a;
+      }
+      return c;
+    };
+    var myPow2 = function(a) {
+      return a * a;
+    };
+    var myAbs = function(a) {
+      return a < 0 ? -a : a;
+    };
+    var myFloor = function(a) {
+      return a | 0;
+    };
+    var myHypot = function(a, b) {
+      return mySqrt(a * a + b * b);
+    };
+    var myTrace = function(ary) {
+      // if (window.pixi_test.isDebug) {
+        console.log(ary);
+      // }
+    };
+    var toRadian = function(a) {
+      return a * myPI / 180;
+    };
+
+    const STAGE_WIDTH = 640,
+          STAGE_HEIGHT = 640;
+
+    // ------------------------------------------------
+    // BASIC SETUP
+    // ------------------------------------------------
+
+    // Create an empty scene
+    var scene = new THREE.Scene();
+
+    // Create a basic perspective camera
+    // var camera = new THREE.PerspectiveCamera( 75, STAGE_WIDTH/STAGE_HEIGHT, 0.1, 1000 );
+    var camera = new THREE.OrthographicCamera(0, STAGE_WIDTH, STAGE_HEIGHT, 0, 0, 1000);
+    camera.position.z = 8;
+
+    // Create a renderer with Antialiasing
+    let renderer = new THREE.WebGLRenderer({antialias:true, alpha: true, preserveDrawingBuffer: true});
+    // let renderer = new THREE.WebGLRenderer();
+    // renderer.autoClearColor = false;
+    renderer.shadowMap.enabled = true;
+
+    // Configure renderer clear color
+    renderer.setClearColor("#000000");
+
+    // Configure renderer size
+    renderer.setSize( STAGE_WIDTH, STAGE_HEIGHT );
+
+    // Append Renderer to DOM
+    document.body.appendChild( renderer.domElement ).setAttribute( 'class', 'c-motion' );
+
+    var sceneBG = new THREE.Scene();
+    // sceneBG.fog = new THREE.Fog(0xffffff, 200, -200);
+    sceneBG.fog = new THREE.FogExp2(0x000000, 0.0015);
+    // sceneBG.fog = new THREE.FogExp2(0xeeeeee, 0.5);
+    var cameraBG = new THREE.PerspectiveCamera( 75, STAGE_WIDTH / STAGE_HEIGHT, 1, 700 );
+
+    cameraBG.position.set(0, 0, 0);
+    var geometryBG = new THREE.BoxGeometry( 16, 16, 16 );
+    // var materialBG = new THREE.MeshNormalMaterial();
+    var materialBG = new THREE.MeshLambertMaterial( { color: 0x00ff88 } )
+    // materialBG.renderOrder = 1;
+
+    var cube = [];
+    for (let i = 0; i < 500; i++) {
+      cube[i] = new THREE.Mesh( geometryBG, materialBG );
+      cube[i].position.set(myRandom() * 1000 - 500, myRandom() * 1000 - 500, myRandom() * 1000 - 500);
+      sceneBG.add( cube[i] );
+    }
+    cameraBG.lookAt({x:1,y:1,z:1});
+
+    let light = new THREE.DirectionalLight(0xffffff);
+    // spotLight.castShadow = true;
+    light.position.set(1, 1, 1).normalize();
+    sceneBG.add( light );
+
+
+
+    // Render Loop
+    var render = function () {
+      requestAnimationFrame( render );
+      // for (let i = 0; i < 500; i++) {
+      //   cube[i].rotation.x += 0.01;
+      //   cube[i].rotation.y += 0.01;
+      // }
+      // cameraBG.position.x += ( 1 - cameraBG.position.x ) * 0.05;
+      // cameraBG.position.y += ( -1 + -cameraBG.position.y ) * 0.05;
+      // cameraBG.lookAt( cameraBG.position );
+      cameraBG.rotation.x += 0.002;
+      cameraBG.rotation.y += 0.0015;
+      cameraBG.rotation.z += 0.001;
+      // Render the scene
+      renderer.render(sceneBG, cameraBG);
+    };
+
+
+
+    renderer.render(sceneBG,cameraBG);
+    render();
+  </script>
+</body>
+</html>

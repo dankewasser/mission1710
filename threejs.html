@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Three.js チュートリアル１</title>
+<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.min.js"></script>
+</head>
+
+<body>
+  <script>
+    var myRound = Math.round,
+        myCeil = Math.ceil,
+        myRandom = Math.random,
+        mySin = Math.sin,
+        myCos = Math.cos,
+        mySqrt = Math.sqrt,
+        myPI = Math.PI;
+    var myPow = function(a, b) {
+      var c = a;
+      for (var i = 1; i < b; i++) {
+        c *= a;
+      }
+      return c;
+    };
+    var myPow2 = function(a) {
+      return a * a;
+    };
+    var myAbs = function(a) {
+      return a < 0 ? -a : a;
+    };
+    var myFloor = function(a) {
+      return a | 0;
+    };
+    var myHypot = function(a, b) {
+      return mySqrt(a * a + b * b);
+    };
+    var myTrace = function(ary) {
+      // if (window.pixi_test.isDebug) {
+        console.log(ary);
+      // }
+    };
+    var toRadian = function(a) {
+      return a * myPI / 180;
+    };
+
+    const STAGE_WIDTH = 640,
+          STAGE_HEIGHT = 640;
+
+    // ------------------------------------------------
+    // BASIC SETUP
+    // ------------------------------------------------
+
+    // Create an empty scene
+    var scene = new THREE.Scene();
+
+    // Create a basic perspective camera
+    // var camera = new THREE.PerspectiveCamera( 75, STAGE_WIDTH/STAGE_WIDTH, 0.1, 1000 );
+    var camera = new THREE.OrthographicCamera(0, STAGE_WIDTH, STAGE_HEIGHT, 0, 0, 1000);
+    camera.position.z = 8;
+
+    // Create a renderer with Antialiasing
+    var renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer: true});
+    renderer.autoClearColor = false;
+
+    // Configure renderer clear color
+    renderer.setClearColor("#000000");
+
+    // Configure renderer size
+    renderer.setSize( STAGE_WIDTH, STAGE_WIDTH );
+
+    // Append Renderer to DOM
+    document.body.appendChild( renderer.domElement );
+
+    // ------------------------------------------------
+    // FUN STARTS HERE
+    // ------------------------------------------------
+
+    // Create a Cube Mesh with basic material
+    // var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    // var material = new THREE.MeshNormalMaterial();
+    //
+    // var cube = new THREE.Mesh( geometry, material );
+    // Add cube to Scene
+    // scene.add( cube );
+
+
+
+    var sceneBG = new THREE.Scene();
+    var cameraBG = new THREE.OrthographicCamera(0, STAGE_WIDTH, STAGE_WIDTH, 0, 0, 1000);
+    var geometryBG = new THREE.PlaneGeometry(STAGE_WIDTH, STAGE_WIDTH, 10, 10);
+    var materialBG = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.1,
+      // blending: THREE.AdditiveBlending,
+      side: THREE.FrontSide,
+      depthWrite: false
+    });
+    var bg = new THREE.Mesh(geometryBG, materialBG);
+    //位置調整して追加
+    bg.position.x = STAGE_WIDTH/2;
+    bg.position.y = STAGE_WIDTH/2;
+    sceneBG.add(bg);
+
+    var frameCnt = 0;
+
+
+    // Render Loop
+    var render = function () {
+      frameCnt++;
+      requestAnimationFrame( render );
+
+      // cube.rotation.x += 0.01;
+      // cube.rotation.y += 0.01;
+      // circle.rotation.x += 0.01;
+      // circle.rotation.y += 0.01;
+
+      for (let i = 0, j = circle.length; i < j; i++) {
+        circle[i].degree = (circle[i].degree > 0) ? circle[i].degree - circle[i].spd : 360;
+        circle[i].radian = toRadian(circle[i].degree);
+
+        circle[i].position.x = circle[i].radius * myCos(circle[i].radian) + STAGE_WIDTH/2;
+        circle[i].position.y = circle[i].radius * mySin(circle[i].radian) + STAGE_WIDTH/2;
+      }
+
+      // console.log(circle.x, circle.y);
+
+      // Render the scene
+      renderer.render(sceneBG, cameraBG);
+      renderer.render(scene, camera);
+    };
+
+
+    var circle = [];
+
+
+    THREE.ImageUtils.loadTexture("img/bit.png", undefined, function(texture) {
+      console.log(texture);
+      var textureWidth = texture.image.width,
+          textureHeight = texture.image.height;
+      // var material = new THREE.MeshBasicMaterial({
+      //   color: 0x007eff,
+      //   transparent: true,
+      //   blending: THREE.AdditiveBlending,
+      //   side: THREE.FrontSide,
+      //   depthWrite: false
+      // });
+      var material = new THREE.SpriteMaterial({
+        map: texture,
+        color: 0x007eff,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        side: THREE.FrontSide,
+        depthWrite: false
+      });
+      // var geometry = new THREE.CircleGeometry( 0.1, 500 );
+      for (let i = 0; i < 2; i++) {
+        // circle[i] = new THREE.Mesh( geometry, material );
+        circle[i] = new THREE.Sprite(material);
+        circle[i].radius = 80;
+        circle[i].maxRadius = 80;
+        circle[i].minRadius = 40;
+        circle[i].defX = 0;
+        circle[i].defY = 0 - circle[i].radius;
+        circle[i].position.x = circle.defX;
+        circle[i].position.y = circle.defY;
+        circle[i].scale.x = circle[i].scale.y = circle[i].scale.x = 30;
+        // circle.anchor.x = 0.5;
+        // circle.anchor.y = 0.5;
+        circle[i].lastX = circle.defX;
+        circle[i].lastY = circle.defY;
+        circle[i].degree = i * (360 / 2);
+        circle[i].radian = toRadian(circle[i].degree);
+        circle[i].spd = 4;
+        scene.add( circle[i] );
+      }
+      render();
+    });
+
+
+
+  </script>
+</body>
+</html>

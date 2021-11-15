@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>test</title>
+  <script src="./js/lib.js"></script>
+  <script src="./js/three.min.js"></script>
+  <script src="./js/OBJLoader.js"></script>
+  <script src="./js/MTLLoader.js"></script>
+  <!--<script src="./js/OrbitControls.js"></script>-->
+  <script src="./js/dat.gui.min.js"></script>
+  <script src="./js/app.js"></script>
+  <style>
+    .c-main,.c-motion {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .c-main {
+      z-index: 2;
+      pointer-events: none;
+    }
+    .c-motion {
+      z-index: 1;
+      background: #001e43;
+      transition: background 1s ease;
+    }
+    .c-motion.t-hard {
+      background: #6c2735;
+    }
+    .c-list {
+      margin-top: 680px;
+    }
+  </style>
+</head>
+<body>
+  <ul class="c-list">
+    <li>立方体を動かして3分半くらい雪を避け続けてください</li>
+    <li>キーボード: WASDで移動　Shiftを押している間は移動速度が遅くなる（押しっぱなしのほうが楽かもしれません）<br> マウス: ポインタを動かすと真下についてくる<br>  両方: Spaceキーでいわゆるバリア的なあれの出し入れ</li>
+    <li>スコアは時間経過で自然に上がります <br> 雪にかすると上昇速度に倍率がかかりたいへんインフレします <br> 当たってしまうと倍率が半分くらい下がりますが、気にするのはクリアしてからで大丈夫です</li>
+    <li>弾幕パターンが変わるたび残機がおひとつ増えるのであきらめないで</li>
+    <li>実は当たり判定は中心2px四方だけ しかもチェックが甘いのでたまに抜けます あきらめないで</li>
+  </ul>
+</body>
+</html>
